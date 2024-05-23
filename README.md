@@ -1,4 +1,4 @@
-# twitch_irc_bot
+# C++ Twitch IRC Bot
 This repository contains projects that show how to use the Twitch IRC bot included in my C++ game engine [motor](https://github.com/aconstlink/motor)
 
 ## About
