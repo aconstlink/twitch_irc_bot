@@ -12,14 +12,14 @@ Curl is not required for building the project nor does the engine require it. It
 ## Required User Information
 You need to provide some Twitch related information in order to use the bot. 
 - Client ID
-- Client Secret
+- Client Secret (only for confidential clients)
 - Channel Name
 - Nick Name
 - Broadcasater ID
 - Bot ID
   
 ## How does it work
-You as the broadcaster is using the bot. You should not pass the bot to someone else due to confidential data used.
+You as the broadcaster is using the bot. You should not pass the bot to someone else due to confidential data used if you are using a confidential client application. If you are using a public client application, you can actually pass your bot around! You could even ship it with your game.
 
 ### 1 Create a Twitch Account for your bot
 The regular way to create you a bot is to create new Twitch account. In for this account, create a confidential client with a client_id and a client_secret. We need to create a confidential client because otherwise the process of refreshing the user token will not work. The refresh token will not refresh the user token and is quickly expired. Also the device_code will expire quickly, so the user need to regularly and manually authorize the bot. 
