@@ -2,7 +2,7 @@
 This repository contains projects that show how to use the Twitch IRC bot included in my C++ game engine [motor](https://github.com/aconstlink/motor)
 
 ## About
-The bot is implemented in C++ and does build out of the box. The engine has very little dependencies and can run on Windows and Linux. The goal of the bot is to interact with users in the Twitch stream chat. This bot is intended to be used by the broadcaster itself. The bot uses the "Device Code Grant Flow" so all the data needs to be
+The bot is implemented in C++ and does build out of the box. The engine has very little dependencies and can run on Windows and Linux. The goal of the bot is to interact with users in the Twitch stream chat. This bot is intended to be used by the broadcaster itself. The bot uses the "Device Code Grant Flow" so all the data needs is stored on the device used.
 
 ## Dependencies
 Runing the sample programs require [Curl](https://curl.se/) for secure connection to Twitch. So if Curl is present on your system, you are good to go. 
