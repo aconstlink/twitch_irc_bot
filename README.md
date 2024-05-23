@@ -38,4 +38,4 @@ We need the user_id from the broadcaster and the bot. In case you are using the 
 You could also start the program with the already set user credentials. The program will automatically determin the user token, refresh token and device code for you. The IRC bot will work now. You can write something in the you channels' chat. Using the console application will print the fact to the console that you wrote something. In that print is your user id. You can copy it from there.
 
 
-### Getting a client_id and a client_secret
+
