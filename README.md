@@ -7,7 +7,7 @@ The bot is implemented in C++ and does build out of the box. The engine has very
 ## Dependencies
 Runing the bot requires [Curl](https://curl.se/) for secure connection to Twitch and the OAuth handshaking. Furthermore, Curl is also used to interact with the Twitch endpoints for even more user interaction! So if Curl is present on your system, you are good to go. 
 
-Curl is not required for building the project nor the engine. It is just used at run-time.
+Curl is not required for building the project nor does the engine require it. It is just used for Twitch communication at run-time.
 
 ## Required User Information
 You need to provide some Twitch related information in order to use the bot. 
