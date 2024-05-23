@@ -9,6 +9,8 @@ Runing the bot requires [Curl](https://curl.se/) for secure connection to Twitch
 
 Curl is not required for building the project nor does the engine require it. It is just used for Twitch communication at run-time.
 
+Besides that, all you need is in the project included.
+
 ## Required User Information
 You need to provide some Twitch related information in order to use the bot. 
 - Client ID
