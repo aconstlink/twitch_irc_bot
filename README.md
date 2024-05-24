@@ -1,6 +1,8 @@
 # C++ Twitch IRC Bot
 This repository contains projects that show how to use the Twitch IRC bot included in my C++ game engine [motor](https://github.com/aconstlink/motor)
 
+[![CMake on multiple platforms](https://github.com/aconstlink/twitch_irc_bot/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/aconstlink/twitch_irc_bot/actions/workflows/cmake-multi-platform.yml)
+
 ## About
 The bot is implemented in C++ and does build out of the box. The engine has very little dependencies and can run on Windows and Linux. The goal of the bot is to interact with users in the Twitch stream chat. This bot is intended to be used by the broadcaster itself. The bot uses the "Device Code Grant Flow" so all the data needed is stored on the device used and does not require any server.
 
