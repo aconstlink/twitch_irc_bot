@@ -31,3 +31,4 @@
 *.out
 *.app
 *.credentials
+working/twitch/bot_data.json

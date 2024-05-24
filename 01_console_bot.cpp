@@ -21,7 +21,7 @@ int main( int argc, char ** argv )
     if ( mod == nullptr ) return 1 ;
 
     auto mtr = motor::shared( motor::social::twitch::twitch_irc_bot( motor::move( db ),
-        motor::io::location_t("twitch.pub.credentials") ) ) ;
+        motor::io::location_t("twitch.bot_data.json") ) ) ;
 
     mod->create_tcp_client( motor::network::create_tcp_client_info { 
         "my_twitch_client", 
@@ -49,7 +49,7 @@ int main( int argc, char ** argv )
                 {
                     mtr->send_response( "https://discord.gg/FnxJYWsN" ) ;
                 }
-                else if( c.name == "test" )
+                else if( c.name == "test" && c.user == "aconstlink" )
                 {
                     mtr->send_announcement( "Mega Announcement!" ) ;
                 }
