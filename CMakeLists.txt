@@ -21,6 +21,7 @@ set( CMAKE_DEBUG_POSTFIX d )
 set( programs
   "00_load_json.cpp"
   "01_console_bot.cpp"
+  "02_ui_bot.cpp"
 )
 
 foreach( _prog ${programs} )
