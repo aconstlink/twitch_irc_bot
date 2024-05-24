@@ -19,6 +19,7 @@ motor_emacs_default_directory( "${CMAKE_CURRENT_LIST_DIR}/motor" )
 set( CMAKE_DEBUG_POSTFIX d )
 
 set( programs
+  "00_load_json.cpp"
   "01_console_bot.cpp"
 )
 
@@ -53,5 +54,3 @@ endforeach()
 
 
 install( EXPORT targets DESTINATION "cmake" )
-
-
