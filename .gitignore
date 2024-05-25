@@ -31,4 +31,5 @@
 *.out
 *.app
 *.credentials
-working/twitch/bot_data.json
+*bot_data.json
+*.vscode
