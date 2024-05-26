@@ -49,7 +49,7 @@ int main( int argc, char ** argv )
                 {
                     mtr->send_response( "https://discord.gg/FnxJYWsN" ) ;
                 }
-                else if( c.name == "test" && c.user == "aconstlink" )
+                else if( c.name == "test" && c.user == "acl_bot" )
                 {
                     mtr->send_announcement( "Mega Announcement!" ) ;
                 }
