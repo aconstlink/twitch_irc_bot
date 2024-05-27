@@ -4,6 +4,8 @@
 
 #include <motor/platform/global.h>
 
+#include <motor/social/twitch/twitch_irc_client.h>
+
 #include <motor/controls/types/ascii_keyboard.hpp>
 #include <motor/controls/types/three_mouse.hpp>
 
@@ -21,10 +23,15 @@ namespace this_file
     {
         motor_this_typedefs( my_app ) ;
 
+        motor::io::database_mtr_t _db ;
+        motor::social::twitch::twitch_irc_bot_mtr_t _bot ;
+        motor::social::twitch::twitch_irc_bot::commands_t _comms ;
+
+        motor::string_t _print_list ;
 
         virtual void_t on_init( void_t ) noexcept
         {
-            MOTOR_PROBE( "application", "on_init" ) ;
+            _db = motor::shared( motor::io::database( motor::io::path_t( DATAPATH ), "./working", "data" ) ) ;
 
             {
                 motor::application::window_info_t wi ;
@@ -41,13 +48,18 @@ namespace this_file
                     wnd.send_message( motor::application::vsync_message_t( { true } ) ) ;
                 } ) ;
             }
+
+            _bot = motor::shared( motor::social::twitch::twitch_irc_bot( motor::move( _db ),
+                motor::io::location_t( "twitch.bot_data.json" ) ) ) ;
+
+            this->create_tcp_client( "twtich_irc_bot",
+                motor::network::ipv4::binding_point_host { "6667", "irc.chat.twitch.tv" }, motor::share(_bot) ) ;
+
         }
 
         virtual void_t on_event( window_id_t const wid, 
                 motor::application::window_message_listener::state_vector_cref_t sv ) noexcept
         {
-            MOTOR_PROBE( "application", "on_event" ) ;
-
             if( sv.create_changed )
             {
                 motor::log::global_t::status("[my_app] : window created") ;
@@ -61,18 +73,28 @@ namespace this_file
 
         virtual bool_t on_tool( this_t::window_id_t const wid, motor::application::app::tool_data_ref_t ) noexcept 
         { 
-            MOTOR_PROBE( "application", "on_tool" ) ;
+            if ( _bot->swap_commands( _comms ) )
+            {
+                for ( auto const & com : _comms )
+                {
+                    _print_list += com.name + ", " ;
+                }
+                _comms.clear() ;
+            }
 
             {
-                if( ImGui::Begin("test window") ){}
+                if ( ImGui::Begin( "Commands" ) ) {}
+                ImGui::Text( _print_list.c_str() ) ;
                 ImGui::End() ;
             }
-            
+
+            #if 0
             {
                 bool_t show = false ;
                 ImGui::ShowDemoWindow( &show ) ;
                 ImPlot::ShowDemoWindow( &show ) ;
             }
+            #endif
             return true ; 
         }
 
