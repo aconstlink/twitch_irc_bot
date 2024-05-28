@@ -30,6 +30,7 @@ namespace this_file
         motor::io::database_mtr_t _db ;
         motor::social::twitch::twitch_irc_bot_mtr_t _bot ;
         motor::social::twitch::twitch_irc_bot::commands_t _comms ;
+        motor::social::twitch::twitch_irc_bot::followers_t _followers ;
 
         uint_t const seed = 127436 ;
         uint_t const bit = 8 ;
@@ -37,6 +38,8 @@ namespace this_file
 
         motor::noise::permutation_table_t _pt = 
             motor::noise::permutation_table_t( seed, bit, mixes );
+
+        
 
         enum class prim_type
         {
@@ -236,6 +239,24 @@ namespace this_file
         //*********************************************************************************************
         virtual bool_t on_tool( this_t::window_id_t const wid, motor::application::app::tool_data_ref_t ) noexcept 
         { 
+            if ( ImGui::Begin("Twitch Info") )
+            {
+                _bot->get_latest_followers( _followers ) ;
+                motor::vector< const char * > names(_followers.size() ) ;
+                
+                {
+                    size_t idx = size_t( -1 ) ;
+                    for ( auto const & f : _followers )
+                    {
+                        names[ ++idx ] = f.name.c_str() ;
+                    }
+                }
+                static int item_current = 1;
+                ImGui::ListBox( "listbox", &item_current, names.data(), (int)names.size(), 4 );
+
+            }
+            ImGui::End() ;
+
             #if 0
             {
                 bool_t show = false ;
