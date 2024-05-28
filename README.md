@@ -38,6 +38,8 @@ The rest of the required login information is derived from that.
 
 Try the sample application in this repo first. Compile and start the console application. Once running, a verification URI will be presented to you. Copy and paste it into you browser. You will need to authorize the client application created above. The bot will automatically login once you authorized the Twitch app. In essence, the program will get user token from Twitch along with a refresh Token for renewing expired user tokens automatically. 
 
+![By Broadcaster](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/as_user.jpg)
+
 ### Option 2: Use a bot account
 
 You do everything from above but authorizing the Twitch client application using the bot account. So login with the bot account, create a Twitch client application in the bot accounts dev console. After starting the program and being presented the verification URI, browse it and authorize using the bot account. 
@@ -46,7 +48,8 @@ But before, please add the following data to the confidential file first:
 - client_id
 - broadcaster_name
 - bot_name
-
+  
+![By Bot](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/as_bot.jpg)
 
 Thats it.
 
