@@ -41,8 +41,7 @@ namespace this_file
         enum class prim_type
         {
             triangle,
-            rectangle,
-            cirlce
+            circle
         };
 
         struct spawn_command
@@ -57,6 +56,7 @@ namespace this_file
         {
             prim_type t ;
             motor::math::vec2f_t pos ;
+            float_t radius ;
         };
         motor::vector_pod< particle > _particles ;
         clk_t::time_point _tp ;
@@ -159,13 +159,13 @@ namespace this_file
                         {
                             sc.t = this_t::prim_type::triangle ;
                             sc.num = std::min( size_t( std::stol( com.params[1].c_str() )), size_t(100) ) ;
-                            for( size_t i = 0 ; i<sc.num; ++i )
-                            {
-                                
-
-                                
-                            }
                             _scomms.emplace_back( std::move( sc )  ) ;
+                        }
+                        else if ( com.params[ 0 ] == "circles" )
+                        {
+                            sc.t = this_t::prim_type::circle ;
+                            sc.num = std::min( size_t( std::stol( com.params[ 1 ].c_str() ) ), size_t( 100 ) ) ;
+                            _scomms.emplace_back( std::move( sc ) ) ;
                         }
                     }
                 }
@@ -185,10 +185,14 @@ namespace this_file
                     {
                         float_t const x = float_t( _pt.permute_at( uint_t( i ) ) ) / float_t( _pt.get_upper_bound() ) ;
                         float_t const y = float_t( _pt.permute_at( uint_t( i + sc.num ) ) ) / float_t( _pt.get_upper_bound() ) ;
+                        
                         auto const pos = motor::math::vec2f_t( x * 2.0f - 1.0f, y  * 2.0f - 1.0f ) ;
+
+                        float_t const r = std::min( float_t( _pt.permute_at( uint_t( i ) ) ) / float_t( _pt.get_upper_bound() ), 0.07f ) ;
 
                         _particles[i].t  = sc.t ;
                         _particles[i].pos = pos ;
+                        _particles[i].radius = r ;
                     }
                 }
                 _scomms.clear() ;
@@ -204,10 +208,20 @@ namespace this_file
             {
                 if( _particles[i].t == this_t::prim_type::triangle )
                 {
-                    auto const p0 = _particles[i].pos + motor::math::vec2f_t( -0.01f, -0.01f) ;
-                    auto const p1 = _particles[i].pos + motor::math::vec2f_t( 0.0f, 0.01f) ;
-                    auto const p2 = _particles[i].pos + motor::math::vec2f_t( 0.01f, -0.01f ) ;
-                    _pr.draw_tri( 0, p0, p1, p2, motor::math::vec4f_t(0.4f, 1.0f, 0.3f, 1.0f ) ) ;
+                    auto const r = _particles[i].radius ;
+
+                    auto const p0 = _particles[i].pos + motor::math::vec2f_t( -r, -r) ;
+                    auto const p1 = _particles[i].pos + motor::math::vec2f_t( 0.0f, r) ;
+                    auto const p2 = _particles[i].pos + motor::math::vec2f_t( r, -r ) ;
+                    _pr.draw_tri( 0, p0, p1, p2, motor::math::vec4f_t(0.8f, 0.7f, 0.5f, 1.0f ) ) ;
+                }
+                else if( _particles[i].t == this_t::prim_type::circle )
+                {
+                    auto const r = _particles[i].radius ;
+                    auto const p0 = _particles[i].pos ;
+
+                    _pr.draw_circle( 0, 10, p0, r, motor::math::vec4f_t(0.8f, 0.7f, 0.5f, 1.0f ),
+                        motor::math::vec4f_t(0.8f, 0.7f, 0.5f, 1.0f ) ) ;
                 }
             }
 
