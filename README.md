@@ -24,7 +24,7 @@ You need to provide some Twitch related information in order to use the bot.
   
 ## How does it work
 
-There are two ways of using this program as a bot. You could use the bot with your own user account as the broadcaster or you could create a Twitch bot account und let the bot run using this account.
+There are two ways of using this program as a bot. You could use the bot with your own user account as the broadcaster or you could create a Twitch bot account und let the bot run using that account and also post as such.
 
 ### Use your broadcaster account
 
