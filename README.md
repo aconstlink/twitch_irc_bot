@@ -27,11 +27,11 @@ This means, the bot will login and write into the chat with your user name. You 
 - client_id
 - broadcaster_name
 
-You can make a public client application in your Twitch developer console. Please follow this [guide](https://dev.twitch.tv/docs/authentication/register-app/). It really is very simple. After you created the application, you can press the manage button and copy the client_id for that client application. Paste it into the confidential file.
+You can make a public client application in your Twitch developer console. Please follow this [guide](https://dev.twitch.tv/docs/authentication/register-app/). It really is very simple. After you created the application, you can press the manage button and copy the ```client_id``` for that client application. Paste it into the confidential file.
 
 The rest of the required login information is derived from that. 
 
-Try the sample application in this repo first. Compile and start the console application. Once running, a verification URI will be presented to you. Copy and paste it into you browser. You will need to authorize the client application created above. The bot will automatically login once you authorized the Twitch app. In essence, the program will get user token from Twitch along with a refresh Token for renewing expired user tokens automatically. 
+Try the sample application in this repo first. Compile and start the console application. Once running, a verification URI will be presented to you. Copy and paste it into you browser. You will need to authorize the client application created above. The bot will automatically login once you authorized the Twitch app. In essence, the program will get a user token from Twitch along with a refresh Token for renewing expired user tokens automatically. 
 
 ![By Broadcaster](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/as_user.jpg)
 The image shows me using the build-in echo command which just echos back to the person posted using my user name! The echo command is used for testing purpose.
@@ -51,5 +51,16 @@ The image shows me using the build-in echo command which just echos back to the 
 ## Futhermore
 
 The bot can be used in any other channel using the account authorized the bots' scopes. If the account used for the bot becomes a moderator it can do anything a moderator can do. 
+
+## More Complex Use Cases
+
+This project also contains a visual example. The program just executes more commands. You can spawn triangles or circles like so:
+
+``` !spawn triangles num_tris ```  
+``` !spawn circles num_circs ```  
+
+The following images shows an example of the program ``` 02_ui_bot ``` 
+
+![More Complex](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/more_complex.jpg)
 
 
