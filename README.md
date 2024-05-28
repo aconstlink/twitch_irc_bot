@@ -6,6 +6,8 @@ This repository contains projects that show how to use the Twitch IRC bot includ
 ## About
 The bot is implemented in C++ and does build out of the box. The engine has very little dependencies and can run on Windows and Linux. The goal of the bot is to interact with users in a Twitch stream chat. This bot is intended to be used by the broadcaster itself but could be used on any other channel. The bot uses the "Device Code Grant Flow" so all the data needed is stored on the device used and does not require any server.
 
+If you want to use the bot, you need to use the engine. There are certainly other IRC bot implementations out there. Twitch has a integrations for popular engines too.
+
 ## Dependencies
 Runing the bot requires [Curl](https://curl.se/) for secure connection to Twitch and the OAuth handshaking. Furthermore, Curl is also used to interact with the [Twitch endpoints](https://dev.twitch.tv/docs/api/reference/) for even more user interaction! So if Curl is present on your system, you are good to go. 
 
@@ -48,10 +50,6 @@ But before, please add the following data to the confidential file first:
 ![By Bot](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/as_bot.jpg)
 The image shows me using the build-in ```!echo``` command which just echos back to the person posted using the bots' user name!
 
-## Futhermore
-
-The bot can be used in any other channel using the account authorized the bots' scopes. If the account used for the bot becomes a moderator it can do anything a moderator can do. 
-
 ## More Complex Use Cases
 
 This project also contains a visual example. The program just executes more commands. You can spawn triangles or circles like so:
@@ -62,5 +60,9 @@ This project also contains a visual example. The program just executes more comm
 The following images shows an example of the program ``` 02_ui_bot ``` 
 
 ![More Complex](https://github.com/aconstlink/twitch_irc_bot/blob/main/images/more_complex.jpg)
+
+## Futhermore
+
+The bot can be used in any other channel using the account authorized the bots' scopes. If the account used for the bot becomes a moderator it can do anything a moderator can do. 
 
 
