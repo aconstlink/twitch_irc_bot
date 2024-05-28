@@ -15,7 +15,7 @@ Besides that, all you need is in the project included.
 
 ## First off
 
-Go into the folder "working/Twitch" and duplicate the "credentials.store" and rename it to "bot_data.json". This will be the confidentials file! Do not show that anywhere and do not distribute it after the program started. It will contain confidential data.
+Go into the folder "working/Twitch" and duplicate the "credentials.store" and rename it to "bot_data.json". This will be the confidentials file! Do not show that anywhere and do not distribute it after the program started. It will contain confidential data. But you need to edit it in a bit.
 
 ## How does it work
 
