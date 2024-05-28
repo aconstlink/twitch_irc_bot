@@ -41,6 +41,8 @@ foreach( _prog ${programs} )
       PRIVATE motor::application
       PRIVATE motor::platform
       PRIVATE motor::io
+      PRIVATE motor::noise
+      PRIVATE motor::gfx
       PRIVATE nlohmann_json)
 
     set_target_properties( ${app_name} PROPERTIES FOLDER "programs" )

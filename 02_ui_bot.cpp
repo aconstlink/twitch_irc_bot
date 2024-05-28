@@ -3,8 +3,10 @@
 #include <motor/profiling/probe_guard.hpp>
 
 #include <motor/platform/global.h>
+#include <motor/noise/permutation_table.h>
 
 #include <motor/social/twitch/twitch_irc_client.h>
+#include <motor/gfx/primitive/primitive_render_2d.h>
 
 #include <motor/controls/types/ascii_keyboard.hpp>
 #include <motor/controls/types/three_mouse.hpp>
@@ -19,6 +21,8 @@ namespace this_file
 {
     using namespace motor::core::types ;
 
+    using clk_t = std::chrono::high_resolution_clock ;
+
     class my_app : public motor::application::app
     {
         motor_this_typedefs( my_app ) ;
@@ -27,10 +31,51 @@ namespace this_file
         motor::social::twitch::twitch_irc_bot_mtr_t _bot ;
         motor::social::twitch::twitch_irc_bot::commands_t _comms ;
 
+        uint_t const seed = 127436 ;
+        uint_t const bit = 8 ;
+        uint_t const mixes = 3 ;
+
+        motor::noise::permutation_table_t _pt = 
+            motor::noise::permutation_table_t( seed, bit, mixes );
+
+        enum class prim_type
+        {
+            triangle,
+            rectangle,
+            cirlce
+        };
+
+        struct spawn_command
+        {
+            prim_type t ;
+            size_t num ;
+            motor::math::vec2f_t pos ;
+        };
+        motor::vector< spawn_command > _scomms ;
+
+        struct particle
+        {
+            prim_type t ;
+            motor::math::vec2f_t pos ;
+        };
+        motor::vector_pod< particle > _particles ;
+        clk_t::time_point _tp ;
+
+        motor::gfx::primitive_render_2d_t _pr ;
+
         motor::string_t _print_list ;
 
+        //*********************************************************************************************
         virtual void_t on_init( void_t ) noexcept
         {
+            {
+                //uint_t const seed = 127436 ;
+                //uint_t const bit = 8 ;
+                //uint_t const mixes = 3 ;
+
+                //_pt =  ;
+            }
+
             _db = motor::shared( motor::io::database( motor::io::path_t( DATAPATH ), "./working", "data" ) ) ;
 
             {
@@ -55,8 +100,10 @@ namespace this_file
             this->create_tcp_client( "twtich_irc_bot",
                 motor::network::ipv4::binding_point_host { "6667", "irc.chat.twitch.tv" }, motor::share(_bot) ) ;
 
+            _pr.init( "twitch_primitive_renderer" ) ;
         }
 
+        //*********************************************************************************************
         virtual void_t on_event( window_id_t const wid, 
                 motor::application::window_message_listener::state_vector_cref_t sv ) noexcept
         {
@@ -71,23 +118,118 @@ namespace this_file
             }
         }
 
-        virtual bool_t on_tool( this_t::window_id_t const wid, motor::application::app::tool_data_ref_t ) noexcept 
-        { 
+        //*********************************************************************************************
+        virtual void_t on_update( motor::application::app::update_data_in_t ) noexcept 
+        {
             if ( _bot->swap_commands( _comms ) )
             {
                 for ( auto const & com : _comms )
                 {
-                    _print_list += com.name + ", " ;
+                    motor::log::global::status("arrived: " + com.name) ;
+                    if( com.name == "spawn" )
+                    {
+                        auto number_check = [&]( motor::string_in_t s )
+                        {
+                            for( auto const c : s )
+                            {
+                                if( c < '0' || c > '9' ) return false ;
+                            }
+                            return true ;
+                        } ;
+
+                        if( !number_check( com.params[1] ) || 
+                            !number_check( com.params[2] ) )
+                        {
+                            
+                            _bot->send_response( com.user + ": Invalid param in command." ) ;
+                            continue ;
+                        }
+
+                        this_t::spawn_command sc ;
+                        if( com.params[0] == "triangle" )
+                        {
+                            sc.t = this_t::prim_type::triangle ;
+                            sc.num = 1 ;
+                            size_t const x = std::stol( com.params[1].c_str() ) ; 
+                            size_t const y = std::stol( com.params[2].c_str() ) ; 
+                            
+                            _scomms.emplace_back( std::move( sc )  ) ;
+                        }
+                        else if( com.params[0] == "triangles" )
+                        {
+                            sc.t = this_t::prim_type::triangle ;
+                            sc.num = std::min( size_t( std::stol( com.params[1].c_str() )), size_t(100) ) ;
+                            for( size_t i = 0 ; i<sc.num; ++i )
+                            {
+                                
+
+                                
+                            }
+                            _scomms.emplace_back( std::move( sc )  ) ;
+                        }
+                    }
                 }
-                _comms.clear() ;
             }
+        }
 
+        //*********************************************************************************************
+        virtual void_t on_graphics( motor::application::app::graphics_data_in_t ) noexcept 
+        {
+            // initialze particles
+            if( _particles.size() == 0 )
             {
-                if ( ImGui::Begin( "Commands" ) ) {}
-                ImGui::Text( _print_list.c_str() ) ;
-                ImGui::End() ;
+                for ( auto const & sc : _scomms )
+                {
+                    _particles.resize( sc.num ) ;
+                    for( auto i=0; i<sc.num; ++i )
+                    {
+                        float_t const x = float_t( _pt.permute_at( uint_t( i ) ) ) / float_t( _pt.get_upper_bound() ) ;
+                        float_t const y = float_t( _pt.permute_at( uint_t( i + sc.num ) ) ) / float_t( _pt.get_upper_bound() ) ;
+                        auto const pos = motor::math::vec2f_t( x * 2.0f - 1.0f, y  * 2.0f - 1.0f ) ;
+
+                        _particles[i].t  = sc.t ;
+                        _particles[i].pos = pos ;
+                    }
+                }
+                _scomms.clear() ;
+                _tp = clk_t::now() ;
             }
 
+            if( (clk_t::now() - _tp) > std::chrono::seconds(3) )
+            {
+                _particles.clear() ;
+            }
+
+            for( size_t i=0; i<_particles.size(); ++i )
+            {
+                if( _particles[i].t == this_t::prim_type::triangle )
+                {
+                    auto const p0 = _particles[i].pos + motor::math::vec2f_t( -0.01f, -0.01f) ;
+                    auto const p1 = _particles[i].pos + motor::math::vec2f_t( 0.0f, 0.01f) ;
+                    auto const p2 = _particles[i].pos + motor::math::vec2f_t( 0.01f, -0.01f ) ;
+                    _pr.draw_tri( 0, p0, p1, p2, motor::math::vec4f_t(0.4f, 1.0f, 0.3f, 1.0f ) ) ;
+                }
+            }
+
+            _pr.prepare_for_rendering() ;
+        } 
+
+        //*********************************************************************************************
+        virtual void_t on_render( this_t::window_id_t const, motor::graphics::gen4::frontend_ptr_t fr,
+            motor::application::app::render_data_in_t rd ) noexcept 
+        {
+            if ( rd.first_frame )
+            {
+                _pr.configure( fr ) ;
+            }
+
+            _pr.prepare_for_rendering( fr ) ;
+            _pr.render( fr, 0 ) ;
+        }
+
+        //*********************************************************************************************
+        virtual bool_t on_tool( this_t::window_id_t const wid, motor::application::app::tool_data_ref_t ) noexcept 
+        { 
             #if 0
             {
                 bool_t show = false ;
@@ -98,7 +240,12 @@ namespace this_file
             return true ; 
         }
 
-        virtual void_t on_shutdown( void_t ) noexcept {}
+        //*********************************************************************************************
+        virtual void_t on_shutdown( void_t ) noexcept 
+        {
+            motor::memory::release_ptr( _db ) ;
+            motor::memory::release_ptr( _bot ) ;
+        }
     };
 }
 
@@ -113,6 +260,7 @@ int main( int argc, char ** argv )
     
     motor::memory::release_ptr( carrier ) ;
 
+    motor::io::global::deinit() ;
     motor::concurrent::global::deinit() ;
     motor::log::global::deinit() ;
     motor::profiling::global::deinit() ;
