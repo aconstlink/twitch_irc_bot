@@ -26,7 +26,7 @@ You need to provide some Twitch related information in order to use the bot.
 
 There are two ways of using this program as a bot. You could use the bot with your own user account as the broadcaster or you could create a Twitch bot account und let the bot run using that account and also post as such.
 
-### Use your broadcaster account
+### 1. Use your broadcaster account
 
 This means, the bot writes into the chat with your user name. You need to fill the following data in the confidential file:
 - client_id
@@ -38,7 +38,7 @@ The rest of the required login information is derived from that.
 
 Try the sample application in this repo first. Compile and start the console application. Once running, a verification URI will be presented to you. Copy and paste it into you browser. You will need to authorize the client application created above. The bot will automatically login once you authorized the Twitch app. In essence, the program will get user token from Twitch along with a refresh Token for renewing expired user tokens automatically. 
 
-### Use a bot account
+### 2. Use a bot account
 
 You do everything from above but authorizing the Twitch client application using the bot account. So login with the bot account, browse the verification uri and authorize. 
 
