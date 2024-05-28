@@ -26,6 +26,9 @@ You need to provide some Twitch related information in order to use the bot.
 
 There are two ways of using this program as a bot. You could use the bot with your own user account as the broadcaster or you could create a Twitch bot account und let the bot run using that account and also post as such.
 
+### Create a data store
+Go into the folder "working/Twitch" and duplicate the "credentials.store" and rename it to bot_data.json.
+
 ### Option 1: Use your broadcaster account
 
 This means, the bot writes into the chat with your user name. You need to fill the following data in the confidential file:
