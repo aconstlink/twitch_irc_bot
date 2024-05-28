@@ -68,14 +68,6 @@ namespace this_file
         //*********************************************************************************************
         virtual void_t on_init( void_t ) noexcept
         {
-            {
-                //uint_t const seed = 127436 ;
-                //uint_t const bit = 8 ;
-                //uint_t const mixes = 3 ;
-
-                //_pt =  ;
-            }
-
             _db = motor::shared( motor::io::database( motor::io::path_t( DATAPATH ), "./working", "data" ) ) ;
 
             {
