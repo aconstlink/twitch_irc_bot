@@ -39,7 +39,8 @@ namespace this_file
         motor::noise::permutation_table_t _pt = 
             motor::noise::permutation_table_t( seed, bit, mixes );
 
-        
+        motor::application::app::window_id_t _render_window ;
+        motor::application::app::window_id_t _tool_window ;
 
         enum class prim_type
         {
@@ -68,6 +69,11 @@ namespace this_file
 
         motor::string_t _print_list ;
 
+        int_t _wnd_x = 100 ;
+        int_t _wnd_y = 100 ;
+        int_t _wnd_width = 800 ;
+        int_t _wnd_height = 600 ;
+
         //*********************************************************************************************
         virtual void_t on_init( void_t ) noexcept
         {
@@ -75,16 +81,36 @@ namespace this_file
 
             {
                 motor::application::window_info_t wi ;
-                wi.x = 100 ;
+                wi.x = _wnd_x ;
+                wi.y = _wnd_y ;
+                wi.w = _wnd_width ;
+                wi.h = _wnd_height ;
+                wi.gen = motor::application::graphics_generation::gen4_auto ;
+                
+                _render_window = this_t::create_window( wi ) ;
+
+                this_t::send_window_message( _render_window, [&]( motor::application::app::window_view & wnd )
+                {
+                    wnd.send_message( motor::application::show_message( { true } ) ) ;
+                    wnd.send_message( motor::application::cursor_message_t( {true} ) ) ;
+                    wnd.send_message( motor::application::vsync_message_t( { true } ) ) ;
+                } ) ;
+            }
+
+            {
+                motor::application::window_info_t wi ;
+                wi.x = 300 ;
                 wi.y = 100 ;
                 wi.w = 800 ;
                 wi.h = 600 ;
                 wi.gen = motor::application::graphics_generation::gen4_auto ;
-                
-                this_t::send_window_message( this_t::create_window( wi ), [&]( motor::application::app::window_view & wnd )
+
+                _tool_window = this_t::create_window( wi ) ;
+
+                this_t::send_window_message( _tool_window, [&] ( motor::application::app::window_view & wnd )
                 {
                     wnd.send_message( motor::application::show_message( { true } ) ) ;
-                    wnd.send_message( motor::application::cursor_message_t( {true} ) ) ;
+                    wnd.send_message( motor::application::cursor_message_t( { true } ) ) ;
                     wnd.send_message( motor::application::vsync_message_t( { true } ) ) ;
                 } ) ;
             }
@@ -224,9 +250,11 @@ namespace this_file
         } 
 
         //*********************************************************************************************
-        virtual void_t on_render( this_t::window_id_t const, motor::graphics::gen4::frontend_ptr_t fr,
+        virtual void_t on_render( this_t::window_id_t const wid, motor::graphics::gen4::frontend_ptr_t fr,
             motor::application::app::render_data_in_t rd ) noexcept 
         {
+            if( wid != _render_window ) return ;
+
             if ( rd.first_frame )
             {
                 _pr.configure( fr ) ;
@@ -239,6 +267,67 @@ namespace this_file
         //*********************************************************************************************
         virtual bool_t on_tool( this_t::window_id_t const wid, motor::application::app::tool_data_ref_t ) noexcept 
         { 
+            if( wid != _tool_window ) return false ;
+
+            if( ImGui::Begin("Window Tools") )
+            {
+                // do borderless toggle
+                if( ImGui::Button("Borderless") )
+                {
+                    this->send_window_message( _render_window, [&] ( motor::application::app::window_view & wnd )
+                    {
+                        wnd.send_message( motor::application::show_message( { true, motor::application::three_state::toggle } ) ) ;
+                    } ) ;
+                }
+
+                // do fullscreen toggle
+                if ( ImGui::Button( "Fullscreen" ) )
+                {
+                    this->send_window_message( _render_window, [&] ( motor::application::app::window_view & wnd )
+                    {
+                        wnd.send_message( motor::application::fullscreen_message( { motor::application::three_state::toggle, motor::application::three_state::toggle } ) ) ;
+                    } ) ;
+                }
+
+                // resize window
+                {
+                    bool_t pos_changed = false ;
+                    bool_t size_changed = false ;
+
+
+                    if ( ImGui::SliderInt( "Render Window X", &_wnd_x, 0, 2500 ) || 
+                        ImGui::SliderInt( "Render Window Y", &_wnd_y, 0, 2500 ) )
+                    {
+                        pos_changed = true ;
+                    }
+
+                    if ( ImGui::SliderInt("Render Window Width", &_wnd_width, 10, 1000 ) || 
+                        ImGui::SliderInt( "Render Window Height", &_wnd_height, 10, 1000 ) )
+                    {
+                        size_changed |= true ;
+                    }
+
+                    if( size_changed || pos_changed )
+                    {
+                        this->send_window_message( _render_window, [&] ( motor::application::app::window_view & wnd )
+                        {
+                            motor::application::resize_message rm ;
+
+                            rm.position = pos_changed ;
+                            rm.x = _wnd_x ;
+                            rm.y = _wnd_y ;
+
+                            rm.resize = size_changed ;
+                            rm.w = size_t(_wnd_width) ;
+                            rm.h = size_t(_wnd_height) ;
+                            wnd.send_message( std::move( rm ) ) ;
+                        } ) ;
+                    }
+
+                }
+                ImGui::End() ;
+            }
+
             if ( ImGui::Begin("Twitch Info") )
             {
                 _bot->get_latest_followers( _followers ) ;
